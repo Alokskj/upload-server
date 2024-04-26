@@ -1,6 +1,7 @@
 const {
   cloneRepository,
   configureNginx,
+  enableSSL,
 } = require("../utils");
 
 // Function to upload website from a Git repository
@@ -9,6 +10,7 @@ const uploadWebsite = async (req, res) => {
   try {
     await cloneRepository(repoUrl, subdomain);
     await configureNginx(subdomain);
+    await enableSSL(subdomain)
     const siteUrl = `http://${subdomain}.${process.env.SERVER_URL}`;
     res.status(200).json({
       success: true,

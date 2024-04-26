@@ -84,6 +84,22 @@ const configureNginx = async (subdomain) => {
   await writeNginxConfig(subdomain);
   await createNginxSymbolicLink(subdomain);
   await restartNginx();
+}
+
+// Function to enable SSL for a website using Let's Encrypt
+const enableSSL = async (subdomain) => {
+  return new Promise((resolve, reject) => {
+    exec(`certbot --nginx -d ${subdomain}.${process.env.SERVER_URL}`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error enabling SSL: ${error.message}`);
+        reject(new Error(`Error enabling SSL: ${error.message}`));
+      } else {
+        console.log(stdout);
+        console.error(stderr);
+        resolve();
+      }
+    });
+  });
 };
 
 module.exports = {
@@ -92,4 +108,5 @@ module.exports = {
   configureNginx,
   restartNginx,
   createNginxSymbolicLink,
+  enableSSL
 };
